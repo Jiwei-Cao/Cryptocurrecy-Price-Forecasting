@@ -187,3 +187,32 @@ def validate_one_epoch():
 for epoch in range(NUM_EPOCHS):
   train_one_epoch()
   validate_one_epoch()
+
+# Plotting the model
+model.eval()
+with torch.inference_mode():
+  # Get model predictions for the training data
+  test_predictions = model(X_test.to(device)).to('cpu').numpy().flatten()
+
+  # Prepare dummy array to inverse transform predictions
+  # Needs to match original scaled input shape: (samples, lookback+1)
+  dummies = np.zeros((X_test.shape[0], lookback+1))
+  dummies[:, 0] = test_predictions # Place predictions in the first column
+
+  # Inverse transform to convert predictions back to original scale (e.g., dollars)
+  dummies = scaler.inverse_transform(dummies)
+  test_predictions = dc(dummies[:, 0]) # Extract rescaled predictions
+
+  # Repeat the same process for the actual test labels
+  dummies = np.zeros((X_test.shape[0], lookback+1))
+  dummies[:, 0] = y_test.flatten() # Actual values in the first column
+  dummies = scaler.inverse_transform(dummies)
+  new_y_test = dc(dummies[:, 0]) # Extract rescaled actual values
+
+  plt.plot(test_dates, new_y_test, label='Actual Close')
+  plt.plot(test_dates, test_predictions, label='Predicted Close')
+  plt.xticks(rotation=45)
+  plt.xlabel('Day')
+  plt.ylabel('Close')
+  plt.legend()
+  plt.show()

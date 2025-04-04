@@ -103,3 +103,39 @@ BATCH_SIZE = 16
 
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
+
+# Creating the LSTM model
+class LSTM(nn.Module):
+  def __init__(self, input_size, hidden_size, num_stacked_layers):
+    super().__init__()
+    self.hidden_size = hidden_size
+    self.num_stacked_layers = num_stacked_layers
+
+    # Define the LSTM layer
+    self.lstm = nn.LSTM(input_size, hidden_size, num_stacked_layers, batch_first=True)
+
+    # Fully connected layer (fc) to map LSTM output to final prediction
+    self.fc = nn.Linear(hidden_size, 1)
+
+  def forward(self, x):
+    batch_size = x.size(0)
+
+    #Initialise hidden state (h0 - short term memory) and cell state (c0 - long term memory) with zeros
+    h0 = torch.zeros(self.num_stacked_layers, batch_size, self.hidden_size).to(device)
+    c0 = torch.zeros(self.num_stacked_layers, batch_size, self.hidden_size).to(device)
+
+    # Pass input and initial states into LSTM
+    # out: output from all timesteps for each sequence
+    # _: tuple containing the final hidden and cell states (not used)
+    out, _ = self.lstm(x, (h0, c0))
+
+    # Use the output from the last timestep as the input to the final layer
+    # out[:, -1, :] selects the last ouput in the sequence for each sample
+    out = self.fc(out[:, -1, :])
+
+    # Return the final prediction
+    return out
+
+model = LSTM(1, 16, 1)
+model.to(device)
+# model

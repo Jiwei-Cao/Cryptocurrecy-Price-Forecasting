@@ -6,3 +6,5 @@ import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from copy import deepcopy as dc
 from sklearn.preprocessing import MinMaxScaler
+
+device = 'cuda' if torch.cuda.is_available() else 'cpu'

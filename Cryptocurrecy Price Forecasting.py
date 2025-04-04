@@ -97,3 +97,9 @@ class TimeSeriesDataset(Dataset):
 
 train_dataset = TimeSeriesDataset(X_train, y_train)
 test_dataset = TimeSeriesDataset(X_test, y_test)
+
+# Wrap the datasets in dataloaders to get batches of data
+BATCH_SIZE = 16
+
+train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)

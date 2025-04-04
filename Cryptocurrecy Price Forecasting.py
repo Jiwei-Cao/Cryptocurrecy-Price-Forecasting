@@ -82,3 +82,18 @@ X_test = torch.tensor(X_test).float()
 y_test = torch.tensor(y_test).float()
 
 # X_train.shape, X_test.shape, y_train.shape, y_test.shape
+
+# Creating custom dataset
+class TimeSeriesDataset(Dataset):
+  def __init__(self, X, y):
+    self.X = X
+    self.y = y
+
+  def __len__(self):
+    return len(self.X)
+
+  def __getitem__(self, i):
+    return self.X[i], self.y[i]
+
+train_dataset = TimeSeriesDataset(X_train, y_train)
+test_dataset = TimeSeriesDataset(X_test, y_test)

@@ -64,3 +64,21 @@ y_test = y[split_index:]
 test_dates = shifted_df.index[split_index:]
 
 # X_train.shape, X_test.shape, y_train.shape, y_test.shape
+
+
+# Reshape data to match LSTM input shape: (batch_size, sequence_length, num_features)
+X_train = X_train.reshape((-1, lookback, 1))
+X_test = X_test.reshape((-1, lookback, 1))
+
+# Reshape target to 2D array: (batch_size, 1)
+y_train = y_train.reshape((-1, 1))
+y_test = y_test.reshape((-1, 1))
+
+# X_train.shape, X_test.shape, y_train.shape, y_test.shape
+
+X_train = torch.tensor(X_train).float()
+y_train = torch.tensor(y_train).float()
+X_test = torch.tensor(X_test).float()
+y_test = torch.tensor(y_test).float()
+
+# X_train.shape, X_test.shape, y_train.shape, y_test.shape

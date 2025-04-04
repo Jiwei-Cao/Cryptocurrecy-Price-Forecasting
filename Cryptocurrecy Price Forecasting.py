@@ -42,3 +42,12 @@ shifted_df_as_np = shifted_df.to_numpy()
 scaler = MinMaxScaler(feature_range=(-1, 1))
 shifted_df_as_np = scaler.fit_transform(shifted_df_as_np)
 # shifted_df_as_np
+
+# Split into input features (X) and prediction target (y)
+X = shifted_df_as_np[:, 1:]  # All columns except the first (past data)
+y = shifted_df_as_np[:, 0]   # First column (the value to predict)
+# X.shape, y.shape
+
+# Flip features so LSTM sees the oldest data first (past → present), allowing it to build context over time
+X = dc(np.flip(X , axis=1))
+# X

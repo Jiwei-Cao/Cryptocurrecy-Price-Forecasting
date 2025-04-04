@@ -30,3 +30,15 @@ def prepare_dataframe_for_lstm(df, n_steps):
   df.dropna(inplace=True)
 
   return df
+
+lookback = 7
+shifted_df = prepare_dataframe_for_lstm(data, lookback)
+# shifted_df
+
+shifted_df_as_np = shifted_df.to_numpy()
+# shifted_df_as_np
+
+# Scale the matrix so that the features all in between -1 and 1
+scaler = MinMaxScaler(feature_range=(-1, 1))
+shifted_df_as_np = scaler.fit_transform(shifted_df_as_np)
+# shifted_df_as_np

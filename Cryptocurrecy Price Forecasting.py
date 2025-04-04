@@ -166,3 +166,24 @@ def train_one_epoch():
       avg_loss_across_batches = running_loss / 100
       # print(f'Batch {batch_index + 1}, Loss: {avg_loss_across_batches:.3f}')
       running_loss = 0.0
+
+def validate_one_epoch():
+  model.eval()
+  with torch.inference_mode():
+    running_loss = 0.0
+
+    for batch_index, batch in enumerate(test_loader):
+      x_batch, y_batch = batch[0].to(device), batch[1].to(device)
+
+      output = model(x_batch)
+      loss = loss_function(output, y_batch)
+      running_loss += loss.item()
+
+  avg_loss_across_batches = running_loss / len(test_loader)
+
+  print(f'Test Loss: {avg_loss_across_batches:.3f}')
+  print()
+
+for epoch in range(NUM_EPOCHS):
+  train_one_epoch()
+  validate_one_epoch()

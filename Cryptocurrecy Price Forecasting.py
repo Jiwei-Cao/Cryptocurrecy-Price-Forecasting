@@ -51,3 +51,16 @@ y = shifted_df_as_np[:, 0]   # First column (the value to predict)
 # Flip features so LSTM sees the oldest data first (past → present), allowing it to build context over time
 X = dc(np.flip(X , axis=1))
 # X
+
+# Splitting the data into train and test data
+split_index = int(len(X) * 0.95)
+
+X_train = X[:split_index]
+X_test = X[split_index:]
+
+y_train = y[:split_index]
+y_test = y[split_index:]
+
+test_dates = shifted_df.index[split_index:]
+
+# X_train.shape, X_test.shape, y_train.shape, y_test.shape

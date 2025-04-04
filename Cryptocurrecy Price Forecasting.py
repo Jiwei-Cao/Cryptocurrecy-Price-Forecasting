@@ -139,3 +139,30 @@ class LSTM(nn.Module):
 model = LSTM(1, 16, 1)
 model.to(device)
 # model
+
+# Training and testing the model
+LEARNING_RATE = 0.001
+NUM_EPOCHS = 100
+
+loss_function = nn.MSELoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
+
+def train_one_epoch():
+  model.train()
+  print(f"Epoch: {epoch + 1}")
+  running_loss = 0.0
+
+  for batch_index, batch in enumerate(train_loader):
+    x_batch, y_batch = batch[0].to(device), batch[1].to(device)
+
+    output = model(x_batch)
+    loss = loss_function(output, y_batch)
+    running_loss += loss.item()
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+    if batch_index % 5 == 4:
+      avg_loss_across_batches = running_loss / 100
+      # print(f'Batch {batch_index + 1}, Loss: {avg_loss_across_batches:.3f}')
+      running_loss = 0.0
